@@ -1,0 +1,17 @@
+name: Copy Issue Labels
+description: >-
+  Copies labels to a pull request from its linked issues (and their parents)
+author: Kyle Laker
+inputs:
+  token:
+    description: >-
+      Used to query the GitHub API for associated issues and labels
+    default: ${{ github.token }}
+  exclude-labels:
+    description: >-
+      Labels to exclude when copying; these should be separated by commas.
+      For example "question,good first issue". The default is to copy all
+      labels.
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

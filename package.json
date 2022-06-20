@@ -1,0 +1,42 @@
+{
+  "name": "copy-issue-labels",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Copies labels to a pull request from its linked issues (and their parents)",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write '**/*.ts'",
+    "format-check": "prettier --check '**/*.ts'",
+    "lint": "eslint src/**/*.ts",
+    "package": "ncc build --source-map --license licenses.txt",
+    "test": "jest",
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kylelaker/copy-issue-labels.git"
+  },
+  "author": "Kyle Laker <kyle@laker.email?",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.9.0",
+    "@actions/github": "^5.0.3",
+    "@octokit/graphql": "^4.8.0",
+    "@octokit/graphql-schema": "^10.73.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.2",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "@vercel/ncc": "^0.34.0",
+    "eslint": "^8.18.0",
+    "eslint-plugin-github": "^4.3.6",
+    "eslint-plugin-jest": "^26.5.3",
+    "jest": "^28.1.1",
+    "js-yaml": "^4.1.0",
+    "prettier": "2.7.1",
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.4"
+  }
+}
