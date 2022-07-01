@@ -45,7 +45,8 @@
       "semi": "error",
       "@typescript-eslint/semi": ["error", "always"],
       "@typescript-eslint/type-annotation-spacing": "error",
-      "@typescript-eslint/unbound-method": "error"
+      "@typescript-eslint/unbound-method": "error",
+      "filenames/match-regex": "off"
     },
     "env": {
       "node": true,

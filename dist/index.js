@@ -8,6 +8,8 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getUniqueLabelsFromIssues = exports.getAllIssues = void 0;
+// The `trackedInIssues` attribute isn't available on the Issue type in the graphql-schema
+// package. It's pretty easy to add manually.
 function getAllIssues(repository) {
     const issues = (repository.pullRequest?.closingIssuesReferences?.nodes ?? []);
     if (!issues?.length) {

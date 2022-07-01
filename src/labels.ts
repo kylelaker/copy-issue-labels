@@ -1,9 +1,7 @@
-import { Repository, Issue as BaseIssue, IssueConnection, Maybe } from "@octokit/graphql-schema";
+import { Repository, Issue, Maybe } from "@octokit/graphql-schema";
 
 // The `trackedInIssues` attribute isn't available on the Issue type in the graphql-schema
 // package. It's pretty easy to add manually.
-export type Issue = BaseIssue & { trackedInIssues: Maybe<IssueConnection> };
-
 export function getAllIssues(repository: Repository): Maybe<Issue>[] {
   const issues = (repository.pullRequest?.closingIssuesReferences?.nodes ?? []) as Issue[];
   if (!issues?.length) {

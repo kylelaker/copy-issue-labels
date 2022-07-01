@@ -1,5 +1,5 @@
-import { Repository } from "@octokit/graphql-schema";
-import { Issue, getUniqueLabelsFromIssues, getAllIssues } from "../src/labels";
+import { Repository, Issue, Maybe } from "@octokit/graphql-schema";
+import { getUniqueLabelsFromIssues, getAllIssues } from "../src/labels";
 
 function createIssue(number: number, labels: string[], trackedInIssues?: Issue[]): Issue {
   return {
@@ -10,24 +10,24 @@ function createIssue(number: number, labels: string[], trackedInIssues?: Issue[]
     trackedInIssues: {
       nodes: trackedInIssues ?? [],
     },
-  } as any as Issue;
+  } as Issue;
 }
 
-function createResult(linkedIssues: Issue[]): any {
+function createResult(linkedIssues: Issue[]): Repository {
   return {
     pullRequest: {
       closingIssuesReferences: {
         nodes: linkedIssues,
       },
     },
-  };
+  } as Repository;
 }
 
-function issueWithoutTracking(issue: Issue): Issue {
+function issueWithoutTracking(issue: Maybe<Issue>): Issue {
   return {
-    number: issue.number,
-    labels: issue.labels,
-  } as any as Issue;
+    number: issue?.number,
+    labels: issue?.labels,
+  } as Issue;
 }
 
 const emptyResult = createResult([]);
@@ -36,7 +36,7 @@ const oneLinkedIssueWithLabelsTracked = createResult([
   createIssue(2, ["child1", "child2"], [createIssue(1, ["parent"])]),
 ]);
 
-function createComplexStructure(): { graphqlResult: any; expectedTags: string[] } {
+function createComplexStructure(): { graphqlResult: Repository; expectedTags: string[] } {
   const issue1 = createIssue(1, ["javascript", "documentation"]);
   const issue2 = createIssue(2, []);
   return {
@@ -61,17 +61,17 @@ function createComplexStructure(): { graphqlResult: any; expectedTags: string[] 
 
 describe("Validate parsing of Issues from the GraphQL API", () => {
   it("should return an empty list when no issue is referenced", async () => {
-    expect(getAllIssues(emptyResult as Repository)).toEqual([]);
+    expect(getAllIssues(emptyResult)).toEqual([]);
   });
   it("should return the linked issue when there is only one", async () => {
-    expect(getAllIssues(oneLinkedIssueWithLabelsNotTracked as Repository)).toEqual(
-      oneLinkedIssueWithLabelsNotTracked.pullRequest.closingIssuesReferences.nodes.map(
+    expect(getAllIssues(oneLinkedIssueWithLabelsNotTracked)).toEqual(
+      oneLinkedIssueWithLabelsNotTracked?.pullRequest?.closingIssuesReferences?.nodes?.map(
         issueWithoutTracking,
       ),
     );
   });
   it("should return the parent and the linked issue", async () => {
-    expect(getAllIssues(oneLinkedIssueWithLabelsTracked as Repository)).toEqual([
+    expect(getAllIssues(oneLinkedIssueWithLabelsTracked)).toEqual([
       issueWithoutTracking(createIssue(2, ["child1", "child2"])),
       issueWithoutTracking(createIssue(1, ["parent"])),
     ]);
@@ -153,7 +153,7 @@ const realExample = {
 describe("Validate getting all labels from GraphQL response", () => {
   it("should work using a real example", async () => {
     expect(
-      getUniqueLabelsFromIssues(getAllIssues(realExample.repository as any as Repository)),
+      getUniqueLabelsFromIssues(getAllIssues(realExample.repository as unknown as Repository)),
     ).toEqual(["bug", "question", "javascript"]);
   });
   const complexTest = createComplexStructure();
@@ -164,6 +164,9 @@ describe("Validate getting all labels from GraphQL response", () => {
     { input: oneLinkedIssueWithLabelsTracked, expected: ["child1", "child2", "parent"] },
     { input: complexTest.graphqlResult, expected: complexTest.expectedTags },
   ])("should return correct inputs for test data", async ({ input, expected }) => {
-    expect(getUniqueLabelsFromIssues(getAllIssues(input)).sort()).toEqual(expected.sort());
+    const compare = (a: string, b: string): number => a.localeCompare(b);
+    expect(getUniqueLabelsFromIssues(getAllIssues(input as Repository)).sort(compare)).toEqual(
+      expected.sort(compare),
+    );
   });
 });
