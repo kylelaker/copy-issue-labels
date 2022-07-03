@@ -55,7 +55,7 @@ async function run(): Promise<void> {
 
     const labels = getUniqueLabelsFromIssues(issues, excludeLabels);
     if (!labels.length) {
-      core.info("Related issues had no tags");
+      core.info("Related issues had no labels");
       return;
     }
 
