@@ -1,6 +1,6 @@
 {
   "name": "copy-issue-labels",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "private": true,
   "description": "Copies labels to a pull request from its linked issues (and their parents)",
   "main": "lib/main.js",
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/kylelaker/copy-issue-labels.git"
   },
-  "author": "Kyle Laker <kyle@laker.email?",
+  "author": "Kyle Laker <kyle@laker.email>",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.9.0",
